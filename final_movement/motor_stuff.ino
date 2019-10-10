@@ -13,7 +13,7 @@ float getRPM(int motor){
   }
 }
 
-char moveForward(int count){
+char moveForward(){
   choice='W';
   md.setM1Speed(-actualR);
   md.setM2Speed(actualL);
@@ -27,7 +27,7 @@ void moveBackwards(){
 
 void moveClock(){
   int i=0;
-  while(i<1342){//1240
+  while(i<1380){//1342
     Serial.println("ello");
     md.setM1Speed(200);
     md.setM2Speed(200);
@@ -40,7 +40,7 @@ void moveClock(){
 
 void moveCounter(){
   int i=0;
-  while(i<1500){//1320
+  while(i<1515){
     Serial.println("ello");
     md.setM1Speed(-200);
     md.setM2Speed(-200);
@@ -87,7 +87,7 @@ boolean calibrate(int r, int m,int l,int count){
       md.setM2Speed(-100); 
       count=0;
     }
-    if(((r-1)==8&&l!=8)){
+    if(((r-1)==8&&l!=8)||(count>10)){
       if(l<(r-1)){
         md.setM2Speed(-100);
         md.setM1Brake(300);
