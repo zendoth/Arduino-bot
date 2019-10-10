@@ -94,8 +94,8 @@ void loop() {
    
      switch (choice){
       case 'W'://forward
-      while(count%54!=0){//63
-        choice=moveForward(count);
+      while(count%59!=0){//63
+        choice=moveForward();
         realtimePID();
         count++;
       }
@@ -132,11 +132,19 @@ void loop() {
         printSensormedian(medianvalue(SharpIR0), medianvalue(SharpIR5),medianvalue(SharpIR1),medianvalue(SharpIR2),medianvalue(SharpIR3),medianLong(SharpIR4));
         flagf=false;
         break;
-      case 'K':
-        while(flagl!=true){
-          flagl=leftCalibrate(getdistance(SharpIR3),getdistance(SharpIR4));
+       case 'T':
+       while((medianvalue(SharpIR0)>14)||(medianvalue(SharpIR5)>14)||(medianvalue(SharpIR1)>14)||(medianvalue(SharpIR0)==-1)||(medianvalue(SharpIR5)==-1)||(medianvalue(SharpIR1)==-1)){
+          choice= moveForward();
+       }
+       moveStop();
+       ccount=0;
+        while(flagf!=true){
+          flagf=calibrate(medianvalue(SharpIR0),medianvalue(SharpIR5),medianvalue(SharpIR1),ccount);
+          ccount++;
         }
-        flagl=false;
+        flagf=false;
+       break;
+        printSensormedian(medianvalue(SharpIR0), medianvalue(SharpIR5),medianvalue(SharpIR1),medianvalue(SharpIR2),medianvalue(SharpIR3),medianLong(SharpIR4));
         break;
       default://else dont move
         moveStop();
