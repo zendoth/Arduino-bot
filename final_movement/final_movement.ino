@@ -1,8 +1,12 @@
 #include "DualVNH5019MotorShield.h"
-#include "SoftwareSerial.h"
+//#include "SoftwareSerial.h"
 #include <SharpIR.h>
+#include <EnableInterrupt.h>
 DualVNH5019MotorShield md;
-
+//Definitions//
+#define M1_PIN 3
+#define M2_PIN 11
+#define INTERVAL 100
 
 double setRPM = 200.0;   //Desired RPM/120
 double rkp = 1.13; //1.09208      //Kp value for Right Wheel PID
@@ -37,11 +41,17 @@ SharpIR SharpIR2(midRight,modelshort);
 SharpIR SharpIR3(midLeft,modelshort);
 SharpIR SharpIR4(longLeft,modellong);
 SharpIR SharpIR5(frontMid,modelshort);
+volatile unsigned long m1_tick=0, m2_tick=0, m1_oldtick=0, m2_oldtick=0, m1_current=0, m2_current=0, m1_tickchange=0, m2_tickchange=0;
+unsigned long time1, time2;
 volatile int counter=0;
 volatile int count;
 void setup() {
   Serial.begin(115200);
   pinMode(ledPin,OUTPUT);
+  pinMode(M1_PIN, INPUT);
+  pinMode(M2_PIN, INPUT);
+  attachPinChangeInterrupt(M1_PIN, m1_Interrupt, CHANGE);
+  attachPinChangeInterrupt(M2_PIN, m2_Interrupt, CHANGE);
   md.init();
   count=1;
 }
@@ -76,6 +86,34 @@ void realtimePID() {        //PID function to modify speed values using digital 
   actualL = rpmToPwm(luk1);//lek;  
   actualL*=-1;
 }
+
+
+void rotate_counter(int degree){
+  moveStop();
+  delay(110);
+  int total_count = 0;
+  total_count = 8.851*degree-41.4;
+  m1_oldtick = m1_tick;
+  md.setM1Speed(-200);
+  md.setM2Speed(-200);
+  while((m1_tick - m1_oldtick)<total_count);
+  moveStop();
+  delay(50);
+  return;
+}
+void rotate_clock(int degree){
+  moveStop();
+  delay(110);
+  int total_count = 0;
+  total_count = 8.851*degree-41.4;
+  m1_oldtick = m1_tick;
+  md.setM1Speed(200);
+  md.setM2Speed(200);
+  while((m1_tick - m1_oldtick)<total_count);
+  moveStop();
+  delay(50);
+  return;
+}
 ///////////////////////////////////////////////////////////////////////////////
 boolean flagf,flagl;
 char choice='Z';
@@ -94,7 +132,7 @@ void loop() {
    
      switch (choice){
       case 'W'://forward
-      while(count%59!=0){//63
+      while(count%62!=0){//63
         choice=moveForward();
         realtimePID();
         count++;
@@ -113,11 +151,13 @@ void loop() {
         printSensormedian(medianvalue(SharpIR0), medianvalue(SharpIR5),medianvalue(SharpIR1),medianvalue(SharpIR2),medianvalue(SharpIR3),medianLong(SharpIR4));
         break;
       case 'R'://rotate clock
-        moveClock();
+        //moveClock();
+        rotate_clock(95);
         printSensormedian(medianvalue(SharpIR0), medianvalue(SharpIR5),medianvalue(SharpIR1),medianvalue(SharpIR2),medianvalue(SharpIR3),medianLong(SharpIR4));
       break;                          
       case 'L'://rotate counter
-        moveCounter();
+        //moveCounter();
+        rotate_counter(94);
         printSensormedian(medianvalue(SharpIR0), medianvalue(SharpIR5),medianvalue(SharpIR1),medianvalue(SharpIR2),medianvalue(SharpIR3),medianLong(SharpIR4)); 
         break;
       case 'B':
@@ -126,7 +166,10 @@ void loop() {
       case 'C':
         ccount=0;
         while(flagf!=true){
-          flagf=calibrate(medianvalue(SharpIR0),medianvalue(SharpIR5),medianvalue(SharpIR1),ccount);
+          int l,r;
+          l=medianvalue(SharpIR0);
+          r=medianvalue(SharpIR1);
+          flagf=calibrate(l,r,ccount);
           ccount++;
         }
         printSensormedian(medianvalue(SharpIR0), medianvalue(SharpIR5),medianvalue(SharpIR1),medianvalue(SharpIR2),medianvalue(SharpIR3),medianLong(SharpIR4));
@@ -139,7 +182,7 @@ void loop() {
        moveStop();
        ccount=0;
         while(flagf!=true){
-          flagf=calibrate(medianvalue(SharpIR0),medianvalue(SharpIR5),medianvalue(SharpIR1),ccount);
+          flagf=calibrate(medianvalue(SharpIR0),medianvalue(SharpIR1),ccount);
           ccount++;
         }
         flagf=false;
