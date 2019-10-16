@@ -51,24 +51,66 @@ int medianvalue(SharpIR x){
   return list[5];
 }
 
-int medianLong(SharpIR x){
-    int list[10];
-  int i=0;
-  for(i=0;i<10;i++){
+int modevalue(SharpIR x){
+  int list[10];
+  int i =0;
+    for(i=0;i<10;i++){
+    list[i]=getdistance(x);
+  }
+  int list_length = sizeof(list) / sizeof(list[0]);
+  int maxVal = 0;
+  int maxCnt = 0;
+  i =0;
+  int j =0;
+
+  for (i=0; i <list_length; ++i){
+      int count = 0;
+      for (j=0; j < list_length; j++) {
+        if(list[j]== list[i])
+        ++count;
+      }
+      if (count > maxCnt) {
+        maxCnt = count;
+        maxVal = list[i];
+      }
+    }
+
+  return maxVal;
+}
+
+int modeLong(SharpIR x){
+  int list[10];
+  int i =0;
+    for(i=0;i<10;i++){
     list[i]=getLdistance(x);
   }
   int list_length = sizeof(list) / sizeof(list[0]);
-  qsort(list, list_length, sizeof(list[0]), sort_desc);
-  return list[5];
-  
+  int maxVal = 0;
+  int maxCnt = 0;
+  i =0;
+  int j =0;
+
+  for (i=0; i <list_length; ++i){
+      int count = 0;
+      for (j=0; j < list_length; j++) {
+        if(list[j]== list[i])
+        ++count;
+      }
+      if (count > maxCnt) {
+        maxCnt = count;
+        maxVal = list[i];
+      }
+    }
+
+  return maxVal;
 }
-void printSensormedian(int ifr, int ifm, int ifl, int imr, int iml, int ill){
+void printSensor(int ifr, int ifm, int ifl, int imr, int iml, int ill){
   String sfr, sfm, sfl, smr,sml,sll;
    if(ifr==-1){
     sfr= String(ifr);
    }
    else{
-    ifr+=2;//3
+    ifr+=0;//3
     if(ifr<5){
       sfr="-1";
     }
@@ -82,7 +124,7 @@ void printSensormedian(int ifr, int ifm, int ifl, int imr, int iml, int ill){
     sfm= String(ifm);
    }
    else{ 
-    ifm+=2;//2
+    ifm+=0;//2
     if(ifm<5){
       sfm="-1";
     }
@@ -95,7 +137,7 @@ void printSensormedian(int ifr, int ifm, int ifl, int imr, int iml, int ill){
     sfl= String(ifl);
    }
    else{
-    ifl+=2;//3
+    ifl+=0;//3
     if(ifl<5){
       sfl="-1";
     }
@@ -108,7 +150,7 @@ void printSensormedian(int ifr, int ifm, int ifl, int imr, int iml, int ill){
     smr= String(imr);
    }
    else{
-    imr-=2;//7
+    imr+=2;//7
     if(imr<5){
       smr="-1";
     }
@@ -166,7 +208,7 @@ void printSensormedian(int ifr, int ifm, int ifl, int imr, int iml, int ill){
 
 
 }
-
+/*
 void printSensor(SharpIR fr,SharpIR fm,SharpIR fl,SharpIR mr,SharpIR ml,SharpIR ll){
    String sfr, sfm, sfl, smr,sml,sll;
    int ifr = getdistance(SharpIR0);
@@ -267,4 +309,4 @@ void printSensor(SharpIR fr,SharpIR fm,SharpIR fl,SharpIR mr,SharpIR ml,SharpIR 
    Serial.print(" ");
    Serial.println(sll);//long left 
   
-}
+}*/
