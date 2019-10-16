@@ -61,57 +61,47 @@ double rpmToPwm(double rpm){
   return pwm;
 }
 
-void digitalPIDright() {            //Digital PID implementation for Right Wheel
-  double rk1 = rkp + rki + rkd;
-  double rk2 = (-rkp) - (2 * rkd);
-  double rk3 = rkd;
-  rek = (rk1 * rek2) + (rk2 * rek1) + (rk3 * rek0); // all the k1,k2,k3 multiplied with error.
-  ruk1 = ruk0 + rek; //u[k]= u[k-1]+ (all the k1,k2,k3 multiplied with error)
-  ruk0 = ruk1;//saves the new u[k] into an older u[k-1] for next cycle
-  rek0 = rek1; //saves error from 2 cycles ago into e[k-2]
-  rek1 = rek2; //saves latest error into e[k-1]
-}
 
-boolean calibrate(int r, int m,int l,int count){
+boolean calibrate(int r, int l,int count){
  // if(r==-1||l==-1){
   //  Serial.println("Whatswrong?");
     //return true;
  // }
-         if((r-1)>8&&l>8){
+         if((r-0)>8&&l>8){
        md.setM1Speed(-100);
        md.setM2Speed(100);
        count=0;
      }
-    if(((r-1)<8&&l<8)){
+    if(((r-0)<8&&l<8)){
       md.setM1Speed(100);
       md.setM2Speed(-100); 
       count=0;
     }
-    if(((r-1)==8&&l!=8)||(count>10)){
-      if(l<(r-1)){
+    if(((r-0)==8&&l!=8)||(count>10)){
+      if(l<(r-0)){
         md.setM2Speed(-100);
         md.setM1Brake(300);
         count=0;
       }
-      if(l>(r-1)){
+      if(l>(r-0)){
         md.setM2Speed(100);
         md.setM1Brake(300);
         count=0;
       }
     }
-    if((r-1)!=8&&l==8){
-      if(l>(r-1)){
+    if((r-0)!=8&&l==8){
+      if(l>(r-0)){
         md.setM1Speed(100);
         md.setM2Brake(300);
         count=0;
       }
-      if(l<(r-1)){
+      if(l<(r-0)){
         md.setM1Speed(-100);
         md.setM2Brake(300);
         count=0;
       }
      } 
-    if((r-1)==8&&l==8){
+    if((r-0)==8&&l==8){
       moveStop();
       count=0;
       delay(10);
