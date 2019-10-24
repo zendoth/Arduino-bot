@@ -63,67 +63,60 @@ double rpmToPwm(double rpm){
 
 
 boolean calibrate(int r, int l,int count){
- // if(r==-1||l==-1){
-  //  Serial.println("Whatswrong?");
-    //return true;
- // }
-         if((r-0)>8&&l>8){
+  l+=0;
+  r+=0;
+  if((r-0)>8&&l>8){
        md.setM1Speed(-100);
        md.setM2Speed(100);
        count=0;
+       delay(110);
+    moveStop();
      }
     if(((r-0)<8&&l<8)){
       md.setM1Speed(100);
       md.setM2Speed(-100); 
       count=0;
+      delay(110);
+    moveStop();
     }
     if(((r-0)==8&&l!=8)||(count>10)){
       if(l<(r-0)){
         md.setM2Speed(-100);
-        md.setM1Brake(300);
+        md.setM1Brake(400);
         count=0;
+        delay(110);
+    moveStop();
       }
       if(l>(r-0)){
         md.setM2Speed(100);
-        md.setM1Brake(300);
+        md.setM1Brake(400);
         count=0;
+        delay(110);
+    moveStop();
       }
     }
     if((r-0)!=8&&l==8){
       if(l>(r-0)){
         md.setM1Speed(100);
-        md.setM2Brake(300);
+        md.setM2Brake(400);
         count=0;
+        delay(110);
+    moveStop();
       }
       if(l<(r-0)){
         md.setM1Speed(-100);
-        md.setM2Brake(300);
+        md.setM2Brake(400);
         count=0;
+        delay(108);
+    moveStop();
       }
      } 
     if((r-0)==8&&l==8){
+      md.setM2Speed(100);
+      delay(115);
       moveStop();
       count=0;
-      delay(10);
       return true;
     }
 return false;
-}
-
-boolean leftCalibrate(int s, int l){ 
-  if(s==-1||l==-1){
-    return true;
-  }
-  s+=1;
-  if(s>l){
-    md.setM2Speed(-100);
-  }
-  if(l>s){
-    md.setM2Speed(100);
-  }
-  if(l==s){
-    md.setM2Brake(300);
-    return true;
-  }
-  return false;
 }
