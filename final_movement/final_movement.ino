@@ -45,6 +45,8 @@ volatile unsigned long m1_tick=0, m2_tick=0, m1_oldtick=0, m2_oldtick=0, m1_curr
 unsigned long time1, time2;
 volatile int counter=0;
 volatile int count;
+volatile int total_count=0;
+int d0,d1,d2,d3,d4,d5;
 void setup() {
   Serial.begin(115200);
   pinMode(ledPin,OUTPUT);
@@ -80,53 +82,198 @@ void loop() {
       actualR=200;
       actualL=200;
       moveStop();
-      printSensor(modevalue(SharpIR0), modevalue(SharpIR5),modevalue(SharpIR1),modevalue(SharpIR2),modevalue(SharpIR3),modeLong(SharpIR4));
+      d0=modeValue(SharpIR0,0);
+      delay(10);
+      d1=modeValue(SharpIR5,5);
+      delay(10);
+      d2=modeValue(SharpIR1,1);
+      delay(10);
+      d3=modeValue(SharpIR2,2);
+      delay(10);
+      d4=modeValue(SharpIR3,3);
+      delay(10);
+      d5=modeLong(SharpIR4);
+      delay(10);
+        printSensor(d0,d1,d2,d3,d4,d5); 
       choice='Z';
       //delay(10);
       count=1;
-        
       break;
       case 'S'://backwards
         moveBackwards();
-        printSensor(modevalue(SharpIR0), modevalue(SharpIR5),modevalue(SharpIR1),modevalue(SharpIR2),modevalue(SharpIR3),modeLong(SharpIR4));
+      d0=modeValue(SharpIR0,0);
+      delay(10);
+      d1=modeValue(SharpIR5,5);
+      delay(10);
+      d2=modeValue(SharpIR1,1);
+      delay(10);
+      d3=modeValue(SharpIR2,2);
+      delay(10);
+      d4=modeValue(SharpIR3,3);
+      delay(10);
+      d5=modeLong(SharpIR4);
+      delay(10);
+        printSensor(d0,d1,d2,d3,d4,d5); 
         break;
       case 'R'://rotate clock
         rotate_clock(94);
-        printSensor(modevalue(SharpIR0), modevalue(SharpIR5),modevalue(SharpIR1),modevalue(SharpIR2),modevalue(SharpIR3),modeLong(SharpIR4));
+      d0=modeValue(SharpIR0,0);
+      delay(10);
+      d1=modeValue(SharpIR5,5);
+      delay(10);
+      d2=modeValue(SharpIR1,1);
+      delay(10);
+      d3=modeValue(SharpIR2,2);
+      delay(10);
+      d4=modeValue(SharpIR3,3);
+      delay(10);
+      d5=modeLong(SharpIR4);
+      delay(10);
+        printSensor(d0,d1,d2,d3,d4,d5); 
       break;                          
       case 'L'://rotate counter
         rotate_counter(95);
-        printSensor(modevalue(SharpIR0), modevalue(SharpIR5),modevalue(SharpIR1),modevalue(SharpIR2),modevalue(SharpIR3),modeLong(SharpIR4)); 
+      d0=modeValue(SharpIR0,0);
+      delay(10);
+      d1=modeValue(SharpIR5,5);
+      delay(10);
+      d2=modeValue(SharpIR1,1);
+      delay(10);
+      d3=modeValue(SharpIR2,2);
+      delay(10);
+      d4=modeValue(SharpIR3,3);
+      delay(10);
+      d5=modeLong(SharpIR4);
+      delay(10);
+        printSensor(d0,d1,d2,d3,d4,d5); 
         break;
       case 'B':
-        printSensor(modevalue(SharpIR0), modevalue(SharpIR5),modevalue(SharpIR1),modevalue(SharpIR2),modevalue(SharpIR3),modeLong(SharpIR4)); 
+      d0=modeValue(SharpIR0,0);
+      delay(10);
+      d1=modeValue(SharpIR5,5);
+      delay(10);
+      d2=modeValue(SharpIR1,1);
+      delay(10);
+      d3=modeValue(SharpIR2,2);
+      delay(10);
+      d4=modeValue(SharpIR3,3);
+      delay(10);
+      d5=modeLong(SharpIR4);
+      delay(10);
+        printSensor(d0,d1,d2,d3,d4,d5); 
         break;
       case 'C':
         ccount=0;
-        while(flagf!=true){
+        while(flagf!=true&&total_count<500){
           int l,r;
-          l=modevalue(SharpIR0);
-          r=modevalue(SharpIR1);
+          l=modeCalibrate(SharpIR0);
+          r=modeCalibrate(SharpIR1);
           flagf=calibrate(l,r,ccount);
           ccount++;
+          total_count++;
         }
-        printSensor(modevalue(SharpIR0), modevalue(SharpIR5),modevalue(SharpIR1),modevalue(SharpIR2),modevalue(SharpIR3),modeLong(SharpIR4));
+        total_count=0;
+      d0=modeValue(SharpIR0,0);
+      delay(10);
+      d1=modeValue(SharpIR5,5);
+      delay(10);
+      d2=modeValue(SharpIR1,1);
+      delay(10);
+      d3=modeValue(SharpIR2,2);
+      delay(10);
+      d4=modeValue(SharpIR3,3);
+      delay(10);
+      d5=modeLong(SharpIR4);
+      delay(10);
+        printSensor(d0,d1,d2,d3,d4,d5); 
         flagf=false;
         break;
-       case 'T':
-       while((modevalue(SharpIR0)>14)||(modevalue(SharpIR5)>14)||(modevalue(SharpIR1)>14)||(modevalue(SharpIR0)==-1)||(modevalue(SharpIR5)==-1)||(modevalue(SharpIR1)==-1)){
-          choice= moveForward();
-       }
-       moveStop();
-       ccount=0;
-        while(flagf!=true){
-          flagf=calibrate(modevalue(SharpIR0),modevalue(SharpIR1),ccount);
-          ccount++;
-        }
-        flagf=false;
-       break;
-        printSensor(modevalue(SharpIR0), modevalue(SharpIR5),modevalue(SharpIR1),modevalue(SharpIR2),modevalue(SharpIR3),modeLong(SharpIR4));
+        case 'D'://rotate clock
+        rotate_clock(94);
+        Serial.println("pscan|");
+        break;                          
+        case 'A'://rotate counter
+        rotate_counter(95);
+        Serial.println("pscan|");
         break;
+        case 'G':
+        while(count%(65)!=0){//1 grids
+        choice=moveForward();
+        realtimePID();
+        count++;
+      }
+      actualR=200;
+      actualL=200;
+      moveStop();
+      Serial.println("pscan|");
+      choice='Z';
+      count=1;
+      break;
+        case 'H':
+        while(count%(65*2)!=0){//2 grids
+        choice=moveForward();
+        realtimePID();
+        count++;
+      }
+      actualR=200;
+      actualL=200;
+      moveStop();
+      Serial.println("pscan|");
+      choice='Z';
+      count=1;
+      break;
+        case 'I':
+        while(count%((65*3)+3)!=0){//3 grids
+        choice=moveForward();
+        realtimePID();
+        count++;
+      }
+      actualR=200;
+      actualL=200;
+      moveStop();
+      Serial.println("pscan|");
+      choice='Z';
+      count=1;
+      break;
+        case 'J':
+        while(count%((65*4)+4)!=0){//4 grids
+        choice=moveForward();
+        realtimePID();
+        count++;
+      }
+      actualR=200;
+      actualL=200;
+      moveStop();
+      Serial.println("pscan|");
+      choice='Z';
+      count=1;
+      break;
+        case 'K':
+        while(count%((65*5)+10)!=0){//63
+        choice=moveForward();
+        realtimePID();
+        count++;
+      }
+      actualR=200;
+      actualL=200;
+      moveStop();
+      Serial.println("pscan|");
+      choice='Z';
+      count=1;
+      break;
+        case 'M':
+        while(count%((65*6)+12)!=0){//6 grids
+        choice=moveForward();
+        realtimePID();
+        count++;
+      }
+      actualR=200;
+      actualL=200;
+      moveStop();
+      Serial.println("pscan|");
+      choice='Z';
+      count=1;
+      break;
       default://else dont move
         moveStop();
       break;
